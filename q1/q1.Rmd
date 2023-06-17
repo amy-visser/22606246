@@ -1,0 +1,180 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "A Study of Covid-19"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Amy Visser^[__Contributions:__  \\newline _The data utilised in this report has been kindly provided by Our World in Data._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1: 
+
+
+CorrespAuthor_1: FALSE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: 
+# Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+    This article aims to discuss the impact of the Covid-19 pandemic through a variety of channels, including the experience of the pandemic on African countries versus other regions, the impact the virus had on specific concentrated groupings, and the effect of speed of increased hospitalisation facilities on ICU admissions over the period. 
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+library(lubridate)
+
+covid_df <- read.csv('..//q1/data/Covid/owid-covid-data.csv')
+
+list.files('..//q1/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+This article aims to discuss the impact of the Covid-19 pandemic through a variety of channels, including the experience of the pandemic on African countries versus other regions and the impact the virus had on specific concentrated groupings. 
+
+
+# Data  \label{Findings}
+
+```{r preprocessing, include = FALSE, warning = FALSE}
+
+# covid_df$continent <- sub("^$", NA, covid_df$continent)
+# covid_df <- transform(covid_df, continent = ifelse(continent=="" | is.na(continent), location, continent))
+# #Replace all fields with 0 if the value is NA
+# covid_df <- covid_df %>% replace(.=="NA", 0) # replace with 0
+```
+
+
+```{r figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Covid Incidence in Africa compared to Other Regions \\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 7}
+
+g <- Figure_1(covid_df)
+
+g
+```
+As we can see from Figure \ref{Figure1}, it appears as though Africa experienced a relatively dampened severity of the pandemic compared to other regions. In fact, only Oceania experienced lower case incidences than the continent of Africa.  It must be noted, however, that this may have been due to a lack of testing facilities available on the continent compared to other, more wealthy, continents. 
+
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Box Plot of Deaths by Population Density \\label{Figure2}", fig.height = 3, fig.width = 5, dev = 'png'}
+
+g <- ContinentTotals(covid_df)
+
+g
+
+```
+While Africa's case number was high (seen in \ref{Figure2}), the deaths are markedly lower than other continents such as Asia, Europe and North America. 
+
+
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Box Plot of Deaths by Population Density \\label{Figure3}", fig.height = 5, fig.width = 7, dev = 'png'}
+
+g <- Boxplot_PopDens(covid_df)
+
+g
+
+```
+As can be seen in \ref{Figure3}, the log-transformed number of total deaths increases as the population density increases. This, however, appears quite marginal and even decreases for 'very high'. 
+
+```{r Figure4, warning =  FALSE, fig.align = 'center', fig.cap = "Total Percentage of Population Vaccinated in African Countries as of May 2022\\label{Figure4}", fig.height = 7, fig.width = 7, dev = 'png'}
+
+g <- Total_Fully_Vaccinated(covid_df)
+
+g
+```
+Unfortunately, not all African countries posted their vaccination statistics on a daily basis. Thus, the most recent date with the least amount of missing data was chosen to perform an analysis on the vaccination rate of countries within Africa. Figure 4 showcases the percentage of the population fully vaccinated per African country, indicating that Botswana, Rwanda and the Seychelles have the greatest proportions of their populations vaccinated. 
+
+
+```{r Figure5, warning =  FALSE, fig.align = 'center', fig.cap = "Mortality Rate of Countries by Median Age \\label{Figure5}", fig.height = 5, fig.width = 7, dev = 'png'}
+
+g <- Excess_Mortality(covid_df)
+
+g
+
+```
+As can be seen in \ref{Figure5}, the mortality rate spikes a lot higher for nations with higher median ages than those with lower median ages. This is because Covid-19 has been proven to affect the elderly at a much higher incidence than their younger counterparts. 
+
+# Conclusion \label{Conclusion}
+This report details the effects of the Covid-19 pandemic through various modelling techniques and decompositions. Through this, we observe that Covid-19 disproportionately effects elderly individuals, and that Africa was affected by the pandemic to a lesser extent than other continents. 

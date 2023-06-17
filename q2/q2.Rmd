@@ -1,0 +1,146 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "A Study of Weather Patterns experienced in the UK"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Amy Visser^[__Contributions:__  \\newline _The data utilised in this report has been kindly provided by UK National Weather Service._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1:   
+
+
+CorrespAuthor_1: FALSE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: 
+# Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+    This article aims to explore the weather patterns experienced in the UK. 
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse, fmxdat, devtools)
+
+list.files('..//q2/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+weather_df <- read.csv('..//q2/data/London/london_weather.csv')
+
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+This short report aims to show that the weather in the UK is less than ideal for those seeking a warm and sunny abode. In comparison to sunny South Africa, it appears as though the UK is not the coziest place to live year round. The results below reinforce this belief. 
+
+# Analysis \label{Analysis}
+
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Annual Mean Minimum and Maximum Temperatures in the UK over the Last Decade  \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+
+g <- Annual_Max_and_Min(weather_df)
+
+g
+
+```
+It is clear in the line and point graphs above in \ref{Figure1} that, while the mean temperatures have increased slightly over the last decade, the annual mean maximum temperature is only around 18 degrees Celsius in the UK, while the annual mean minimum temperature is a very chilly 9 degrees Celsius! 
+
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Proportion of Sun and Rain Levels in the UK Over the Period \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- BarPlot(weather_df)
+
+g
+
+```
+As we can see from \ref{Figure2}, it is not often that the UK reaches it's maximum sun levels throughout the year. In fact, it appears to peak about a quarter of each year (and that's not even at 100%). This means that, for most of the year, you will not be experiencing optimal sunny weather. Looking at 'max_rain', however, we can see that, while the rain does not often reach its maximum recorded level, it rains quite consistently throughout the year. 
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Monthly Insights\\label{Figure3}", fig.height = 4, fig.width = 4, dev = 'png'}
+
+insights <- Monthly_Insights(weather_df)
+
+#insights$processed_df
+
+print(insights$plot)
+```
+As seen in \ref{Figure3}, there have been many rainy days in the UK over the sample period. The wet season(October - March), seems particularly wet over the period studied. 
+
+# Conclusion \label{Conclusion}
+With reference to the figures provided in the report above, I think it is fair to state that the UK has experienced miserable weather over its history. If one were to live in the UK, they could expect many rainy days ahead, and perhaps not too many sunny ones, ahead. 

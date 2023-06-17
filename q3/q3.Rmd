@@ -1,0 +1,175 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Comparison of the Music Progression between Colplay and Metallica over Time"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Amy Visser^[__Contributions:__  \\newline _The data utilised in this report has been kindly provided by Spotify._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1: 
+
+
+CorrespAuthor_1: FALSE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: 
+# Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+    This article aims to compare the popularity of Coldplay vs Metallica
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+library(dplyr)
+
+list.files('..//q3/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+metallica_df <- read.csv('..//q3/data/Coldplay_vs_Metallica/metallica.csv') 
+
+coldplay_df <- read.csv('..//q3/data/Coldplay_vs_Metallica/Coldplay.csv') 
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+This is a short statistical summary of a comparison between Metallica and Coldplay as part of Spotify's undertaking to explore the musical progression and longevity of some of the most famous bands over time. 
+
+# Findings \label{Findings}
+
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Coldplay Energy by Album \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+ 
+g <- Energy_Coldplay(coldplay_df)
+
+g
+ 
+```
+We can see in \ref{Figure1} that Coldplay has a varied level of energy in all of their albums. They have a good mix of energetic and soothing songs on all albums. It appears as though the average energy of their most recent album is less than previous albums. 
+
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Metallica Energy by Album \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Energy_Metallica(metallica_df)
+
+g
+
+```
+We see in \ref{Figure2} that Metallica albums are very high energy, with only a few spurts of low energy songs in their albums from time to time. 
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Colplay Valence by Album \\label{Figure3}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+
+g <- Valence_Coldplay(coldplay_df)
+
+g
+
+```
+Valence, defined by Spotify, is: “A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive (e.g. happy, cheerful, euphoric), while tracks with low valence sound more negative (e.g. sad, depressed, angry).” \ref{Figure3} shows that Coldplay has a lot of negative-sounding songs, though there are elements of positivity throughout their albums. \ref{Figure4} shows that Metallica has big concentrations around 0.25 and 0.5, indicating negativity in their albums as well. Having had a listen to their music in the past and looking at the energy scores above, we can assume these albums contain pretty angry-sounding songs. 
+
+
+```{r Figure4, warning =  FALSE, fig.align = 'center', fig.cap = "Metallica Valence by Album \\label{Figure4}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+
+g <- Valence_Metallica(metallica_df)
+
+g
+```
+
+```{r Figure5, warning =  FALSE, fig.align = 'center', fig.cap = "Colplay Popularity by Album \\label{Figure5}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Coldplay_Popularity(coldplay_df)
+
+g
+```
+
+```{r Figure6, warning =  FALSE, fig.align = 'center', fig.cap = "Metallica Popularity by Album \\label{Figure6}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Metallica_Popularity(metallica_df)
+
+g
+
+```
+As seen in \ref{Figure5} and \ref{Figure6}, It appears as though Metallica's popularity varies much more across their albums than Coldplay's. 'Six Feet Down Under' and 'Six Feet Down Under Part 2' were extremely unpopular, both sitting with scores below 10. However, they have some albums with extremely popular hits as well, some ranging over 80. For Coldplay, their albums consistenly range between 50 and 75, bar a few unpopular exceptions such as the album 'Everyday Life'. These graphs are plotted in order of album release. We can see that Metallica has somewhat decreased in their popularity over time, while Coldplay seems consistently popular. 
+
+# Conclusion \label{Conclusion}
+It is obvious that Metallica has been around longer and produced more music than Coldplay. However, it is interesting to see both bands' progression in energy throughout their albums as well as the development of valence in their albums throughout their careers. It is clear from \ref{Figure5} and \ref{Figure6} that they are both very popular bands to this day. 

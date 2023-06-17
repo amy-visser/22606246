@@ -1,0 +1,171 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Research into Netflix"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Amy Visser^[__Contributions:__  \\newline _The data utilised in this report has been kindly provided by Netflix._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1: 
+
+
+CorrespAuthor_1: FALSE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: 
+# Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+    This article aims to compare the popularity of Netflix titles in an effort to determine the most optimal cohort of movie and series offerings to place on a new streaming service to attract maximum revenue. 
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+
+list.files('..//q4/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+netflix_df <- read.csv('..//q4/data/netflix/titles.csv')
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+This is a short summary report detailing the current offerings on the Netflix streaming service. The following analysis showcases the scope of offerings provided by Netflix as well as their associated popularities through IMDB and TMDB scores. 
+
+# Data  {Findings}
+
+
+```{r Figure1, warning =  FALSE, fig.align = 'center', fig.cap = "Netflix Content Type by Percentage \\label{Figure1}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+
+g <- Show_or_Movie(netflix_df)
+
+g
+
+
+```
+\ref{Figure1} indicates that approximately two thirds of Netflix's offerings on the platform are movies (or 64.7%), while the remaining third is comprised of series. 
+
+
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Run Time Statistics of Netflix Offerings\\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png' }
+
+g <- Runtime(netflix_df)
+
+g
+
+```
+As seen in \ref{Figure2}, the average length of a movie on the platform is just under 99 minutes, while the average length of an episode of a show is just under 39 minutes. 
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Drop off Rate of Netflix Shows per Season on the Platform \\label{Figure3}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Show_Seasons(netflix_df)
+
+g
+
+```
+
+
+We can see in \ref{Figure3} that there is a large drop-off rate for shows after their first season. This indicates that, while Netflix has many offerings of tv shows on their platform, they may not be of quality or do not capture an audience effectively enough to maintain interest for subsequent seasons of the show. 
+
+```{r Figure4, warning =  FALSE, fig.align = 'center', fig.cap = "IMDB Ratings of Netflix Offerings \\label{Figure4}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- IMDB_Rating(netflix_df)
+
+g
+
+```
+Before jumping into a full analysis of the overall ratings of titles on the platform, here is a quick overview of the top-rated offerings on the platform. Inception is the most highly-rated offering on the platform, sitting at an 8.8 rating on IMDB with over 2.2 million votes on the site. Clearly, it is a popular choice among viewers.
+
+```{r Figure5, warning =  FALSE, fig.align = 'center', fig.cap = "IMDB Ratings of Netflix Offerings \\label{Figure5}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Year_and_Rating(netflix_df)
+
+g
+```
+
+\ref{Figure5} shows us a great deal about the movie offerings on Netflix. As seen by the predominantly pinkish hues, most movies on the site have been released in the last decade or so. Further, most movies lie between 60 and 120 minutes, and it seems as though the 'golden spot' where movies see the most success in IMDB ratings is at around 90 minutes of screentime. It appears as though Netflix's 'classics' offering (the movies released over ten years ago) have achieved better ratings. It may be a good idea to include more classics on the new platform. 
+
+
+# Conclusion \label{Conclusion}
+
+It appears as though movies dominate on the streaming platform, and that, while shows are popular on the service, they do not often have many seasons (there is a high dropoff rate after season 1 of most Netflix shows). The optimal running time of movies and shows seems to be around 98 and 40 minutes respectively, considering the clustering around these runtimes we see in the data. Lastly, of the movies on the site, it appears as though there are many new movies on the site, though it is more 'classic' titles which appear to have higher IMDB scores overall. 
