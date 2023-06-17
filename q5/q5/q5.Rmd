@@ -1,0 +1,194 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Research into application downloads on Google Play"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+# --------- Thesis title (Optional - set to FALSE by default).
+# You can move the details below around as you please.
+Thesis_FP: FALSE
+# Entry1: "An unbelievable study with a title spanning multiple lines."
+# Entry2: "\\textbf{Some Guy}" # textbf for bold
+# Entry3: "A thesis submitted toward the degree of Doctor of Philosophy"
+# Uni_Logo: Tex/Logo.png # Place a logo in the indicated location (from your root, e.g. defaults to ~/Tex/Logo.png) and uncomment this line. Leave uncommented for no image
+# Logo_width: 0.3 # If using a logo - use this to set width (size) of image
+# Entry4: "Under the supervision of: \\vfill Prof. Joe Smith and Dr. Frank Smith"
+# Entry5: "Stellenbosch University"
+# Entry6: April 2020
+# Entry7:
+# Entry8:
+
+# --------- Front Page
+# Comment: ----- Follow this pattern for up to 5 authors
+AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
+Author1: "Amy Visser^[__Contributions:__  \\newline _The data utilised in this report has been kindly provided by Google._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Stellenbosch University, South Africa" # First Author's Affiliation
+Email1: 
+
+
+CorrespAuthor_1: FALSE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+# Comment out below to remove both. JEL Codes only given if keywords also given.
+keywords: 
+# Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+# ---------- References settings:
+# You can download cls format here: https://www.zotero.org/ - simply search for your institution. You can also edit and save cls formats here: https://editor.citationstyles.org/about/
+# Hit download, store it in Tex/ folder, and change reference below - easy.
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+csl: Tex/harvard-stellenbosch-university.csl # referencing format used.
+# By default, the bibliography only displays the cited references. If you want to change this, you can comment out one of the following:
+#nocite: '@*' # Add all items in bibliography, whether cited or not
+# nocite: |  # add specific references that aren't cited
+#  @grinold2000
+#  @Someoneelse2010
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+    This article aims to explore current app design trends exhibit through the recent downloads of applications on Google Play. 
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+
+if(!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+library(lubridate)
+
+googleplay_df <- read.csv('..//q5/data/googleplay/googleplaystore.csv')
+
+googlereview_df <- read.csv('..//q5/data/googleplay/googleplaystore_user_reviews.csv')
+
+```
+
+```{r datacleaning, include=FALSE}
+
+sum(is.na(googleplay_df))
+googleplay_df <- na.omit(googleplay_df)
+sum(is.na(googleplay_df))
+
+#removing the $ symbol from price variable
+googleplay_df$Price <- str_replace_all(googleplay_df$Price, "\\$", "")
+
+#removing '+' and ',' symbol from 'Install'
+googleplay_df$Installs <- str_replace_all(googleplay_df$Installs, "\\+","")
+googleplay_df$Installs <- str_replace_all(googleplay_df$Installs, "\\,", "")
+
+#standardise to numeric
+googleplay_df$Rating <- as.numeric(googleplay_df$Rating)
+googleplay_df$Reviews <- as.numeric(googleplay_df$Reviews)
+googleplay_df$Price <- as.numeric(googleplay_df$Price)
+googleplay_df$Installs <- as.integer(googleplay_df$Installs)
+
+table(googleplay_df$Category)
+
+googleplay_df$date <- mdy(googleplay_df$Last.Updated)
+
+googleclean_df <- googleplay_df
+
+list.files('..//q5/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+This report seeks to statistically analyse the most popular apps on the google play store in recent years for research into the development of a new app. 
+
+# Data  {Findings}
+
+
+```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Application Installation by Category \\label{Figure1}",  fig.height = 4, fig.width = 6, dev = 'png'}
+
+g <- App_Install(googleclean_df)
+
+g
+
+```
+As we can see in \ref{Figure1}, the most popular installs on the google play store by far are for the 'game' category and the 'communication' category. This does not come as much of a surprise, after all; most of us use social media daily and have a game or two installed for those days we can't think of much else to do. 
+
+
+
+```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Ratings of Applications based on Categories \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- App_Rating(googleclean_df)
+
+g
+
+```
+As can be seen in \ref{Figure2}, most apps on the app store have pretty good ratings! Let's break it down by category: 
+
+```{r Figure3, warning =  FALSE, fig.align = 'center', fig.cap = "Ratings of Applications based on Categories \\label{Figure3}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Rating_Category(googleclean_df)
+g
+
+```
+We can see here that the ratings are fairly consistent among all categories of apps on the Google Play store. However, the 'game' category is probably the most consistently high considering it has the most installs of any category and still remains relatively small in error compared to other categories such as 'lifestyle' or 'family'. 
+
+```{r Figure4, warning =  FALSE, fig.align = 'center', fig.cap = "Number of Free vs Paid Apps Per Category \\label{Figure4}", fig.height = 3, fig.width = 6, dev = 'png'}
+g <- BarGraph_FreePaid(googleclean_df)
+
+g
+```
+As we can see, most apps in the google play store are free to download. The categories of apps with the most paid apps, however, are 'game', 'family' and 'tools'. 
+
+```{r Figure5, warning =  FALSE, fig.align = 'center', fig.cap = "Ratings of Applications based on Categories \\label{Figure5}", fig.height = 3, fig.width = 6, dev = 'png'}
+
+g <- Sentiment_Analysis(googlereview_df)
+
+g
+
+```
+There are mostly positive reviews left on the google play store, followed by neutral reviews and then negative reviews closely thereafter. 
+
+
+
+# Conclusion \label{Conclusion}
+It appears as though the gaming and communications categories are the most profitable. The large majority of app developers do not charge consumers to download their apps, so this is presumably a good trend to follow. 
